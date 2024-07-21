@@ -1,0 +1,16 @@
+{
+  "name": "mind-mapping-app",
+  "version": "1.0.0",
+  "description": "A mind mapping app built with Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.2.1",
+    "electron-packager": "^17.1.2"
+  }
+}
