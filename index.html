@@ -89,7 +89,7 @@
             position: absolute;
             background-color: white;
             border: 1px solid #ccc;
-            padding: 1rem;
+            padding: 0.5rem;
             cursor: move;
             user-select: none;
             z-index: 1;
@@ -100,7 +100,7 @@
         }
         .connector {
             fill: none;
-            stroke: #999;
+            stroke: #3c94f8;
             stroke-width: 2;
         }
         #controls {
@@ -117,14 +117,29 @@
             padding: 0.5rem;
         }
 
+        .node button {
+          opacity: 0.3;
+          transition: opacity 0.3s;
+          /* border: 1px solid transparent; */
+          border: none;
+        }
+        .node:hover button {
+          opacity: 0.7;
+          /* border: 1px solid rgb(182, 182, 182); */
+        }
+
     </style>
 </head>
 <body>
     <svg id="svg-container"></svg>
     <div id="mindmap"></div>
     <div id="controls">
-        <button id="exportBtn">Export Mindmap</button>
-        <button id="importBtn">Import Mindmap</button>
+        <button id="exportBtn">
+          <img class="icon" src="./icons/download.svg" />
+        </button>
+        <button id="importBtn">
+          <img class="icon" src="./icons/file-plus.svg" />
+        </button>
         <input type="file" id="importInput" accept=".json">
     </div>
 
@@ -169,8 +184,9 @@
 
             // Create add child button or the node
             const addChildBtn = document.createElement('button');
-            addChildBtn.textContent = 'Add Child';
+            addChildBtn.innerHTML = '<img class="icon" src="./icons/plus.svg" />';
             addChildBtn.className = 'add-child-btn'; // For styling
+            addChildBtn.title = 'Add Child';
             addChildBtn.onclick = (event) => {
                 event.stopPropagation(); // Prevent click event from bubbling to parent nodes
                 addNode(node); // Assuming you want to pass the node's id, not the uninitialized 'id' variable
@@ -179,8 +195,9 @@
 
             // Create edit button
             const editBtn = document.createElement('button');
-            editBtn.textContent = 'Edit';
+            editBtn.innerHTML = '<img class="icon" src="./icons/edit-3.svg" />';
             editBtn.className = 'edit-btn'; // For styling
+            editBtn.title = 'Edit Name';
             editBtn.onclick = (event) => {
                 event.stopPropagation(); // Prevent click event from bubbling to parent nodes
                 editNode(node); // Assuming you want to pass the node's id, not the uninitialized 'id' variable
@@ -190,7 +207,9 @@
             // Create delete button
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Delete';
+            deleteBtn.innerHTML = '<img class="icon" src="./icons/x.svg" />';
             deleteBtn.className = 'delete-btn'; // For styling
+            deleteBtn.title = 'Delete';
             deleteBtn.onclick = (event) => {
               event.stopPropagation(); // Prevent click event from bubbling to parent nodes
               deleteNode(node);
@@ -213,8 +232,6 @@
 
         function isDialogOpen() {
             const dialog = document.getElementById('customDialog');
-
-            console.log(dialog)
 
             if(dialog) {
               return dialog.style.display !== 'none';
@@ -255,6 +272,9 @@
 
           // get the node-text element's content and place it in input
           document.getElementById('textInput').value = node.getElementsByClassName('node-text')[0].textContent;
+          document.getElementById('textInput').focus();
+          document.getElementById('textInput').select();
+
         }
 
         // Function to hide the dialog
