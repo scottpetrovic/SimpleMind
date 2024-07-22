@@ -4,8 +4,8 @@ const { app, BrowserWindow, globalShortcut } = require('electron')
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
     webPreferences: {
       nodeIntegration: true,
       // Note: For security reasons, you should keep contextIsolation enabled and use contextBridge for IPC
