@@ -13,132 +13,18 @@
     <!-- adding this currently makes it function odd. TODO: look into to see if this is needed-->
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" /> -->
 
-    <style>
-
-      * {
-        font-family: sans-serif;
-      }
-
-      html {
-        background: #f1f1f1
-      }
-
-      h2 {
-        font-weight: normal;
-        font-size: 16px;
-      }
-
-      button {
-        padding: 0.5rem;
-        border-color: #e7e7e7;
-        border-radius: 5px;
-        border-style: solid;
-        background: white;
-        margin: 0 0.25rem;
-        cursor: pointer;
-      }
-      button:hover {
-        background: rgb(226, 226, 226);
-      }
-
-      input[type="text"] {
-        padding: 1rem;
-        border: none;
-        border-radius: 5px;
-        background-color: #e9e9e9;
-      }
-
-
-        #customDialog {
-          position: fixed; /* Use fixed positioning */
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%); /* Center the dialog */
-          z-index: 1000; /* Ensure it's above other content */
-          background-color: white; /* Background color */
-          border: 1px solid #ccc; /* Border to look like a box */
-          border-radius: 5px; /* Optional: rounded corners */
-          padding: 20px; /* Padding inside the dialog */
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add some shadow for depth */
-          display: none; /* Start hidden */
-        }
-
-        /* Overlay covering the entire screen */
-        #dialogOverlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-          z-index: 999; /* Just below the dialog to cover other elements */
-          display: none; /* Start hidden */
-        }
-
-
-        #svg-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .node {
-            position: absolute;
-            background-color: white;
-            border: 1px solid #ccc;
-            padding: 0.5rem;
-            cursor: move;
-            user-select: none;
-            z-index: 1;
-            text-align: center;
-        }
-        .node.selected {
-            border: 2px solid #007bff;
-        }
-        .connector {
-            fill: none;
-            stroke: #3c94f8;
-            stroke-width: 2;
-        }
-        #controls {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-        }
-        #importInput {
-            display: none;
-        }
-
-        .node-text {
-            pointer-events: none;
-            padding: 0.5rem;
-        }
-
-        .node button {
-          opacity: 0.3;
-          transition: opacity 0.3s;
-          /* border: 1px solid transparent; */
-          border: none;
-        }
-        .node:hover button {
-          opacity: 0.7;
-          /* border: 1px solid rgb(182, 182, 182); */
-        }
-
-    </style>
+  <!-- add style.css-->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <svg id="svg-container"></svg>
     <div id="mindmap"></div>
     <div id="controls">
         <button id="exportBtn">
-          <img class="icon" src="./icons/download.svg" />
+          <img title="Download JSON file" class="icon" src="./icons/download.svg" />
         </button>
         <button id="importBtn">
-          <img class="icon" src="./icons/file-plus.svg" />
+          <img title="Import JSON file" class="icon" src="./icons/file-plus.svg" />
         </button>
         <input type="file" id="importInput" accept=".json">
     </div>
@@ -164,9 +50,15 @@
         let initialDragPosition = { x: 0, y: 0 };
         let rootNode = null;
 
-        function createNode(x, y, parent = null, id = null, content = null, isAddingDeleteButton = true) {
+        function createNode(x, y, parent = null, id = null, content = null, isRootNode = false) {
             const node = document.createElement('div');
-            node.className = 'node';
+            
+            if(isRootNode) {
+              node.className = 'node root-node';
+            } else {
+              node.className = 'node';
+            }
+
             node.id = id || `node-${nodeId++}`;
             node.style.left = `${x}px`;
             node.style.top = `${y}px`;
@@ -205,7 +97,8 @@
             node.appendChild(editBtn);
 
             // Create delete button
-            if(isAddingDeleteButton) {
+            // root node cannot be deleted
+            if(isRootNode === false) {
               const deleteBtn = document.createElement('button');
               deleteBtn.textContent = 'Delete';
               deleteBtn.innerHTML = '<img class="icon" src="./icons/x.svg" />';
@@ -508,9 +401,31 @@
         });
 
         // Create initial node
-        const isAddingDeleteButton = false
-        rootNode = createNode(100, 100, null, null, 'Root Node', isAddingDeleteButton);
+        const isRootNode = true
+        rootNode = createNode(100, 100, null, null, 'Root Node', isRootNode);
         selectNode({ target: rootNode });
+
+        // if someone clicks and starts dragging in the canvas, treat that as moving the root node
+        document.addEventListener('mousedown', (e) => {
+          if (!e.target.classList.contains('node')) {
+            const simulatedEvent = new MouseEvent('mousedown', {
+                bubbles: true,
+                cancelable: true,
+                clientX: e.clientX,
+                clientY: e.clientY
+            });            
+            rootNode.dispatchEvent(simulatedEvent);
+          }
+        });
+
+        // Prevent default browser behavior for drag events when dialog is open
+        document.getElementById('dialogOverlay').addEventListener('mousemove', function(event) {
+            event.stopPropagation(); // This stops the event from propagating further
+            event.preventDefault(); // This prevents any default action that might be associated with the event
+        });
+
+
+
     </script>
 </body>
 </html>
