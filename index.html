@@ -34,6 +34,11 @@
         border-radius: 5px;
         border-style: solid;
         background: white;
+        margin: 0 0.25rem;
+        cursor: pointer;
+      }
+      button:hover {
+        background: rgb(226, 226, 226);
       }
 
       input[type="text"] {
@@ -88,6 +93,7 @@
             cursor: move;
             user-select: none;
             z-index: 1;
+            text-align: center;
         }
         .node.selected {
             border: 2px solid #007bff;
@@ -105,14 +111,18 @@
         #importInput {
             display: none;
         }
+
+        .node-text {
+            pointer-events: none;
+            padding: 0.5rem;
+        }
+
     </style>
 </head>
 <body>
     <svg id="svg-container"></svg>
     <div id="mindmap"></div>
     <div id="controls">
-        <button id="addNode">Add Child Node</button>
-        <button id="deleteNode">Delete Selected Node</button>
         <button id="exportBtn">Export Mindmap</button>
         <button id="importBtn">Import Mindmap</button>
         <input type="file" id="importInput" accept=".json">
@@ -129,8 +139,6 @@
     <script>
         const mindmap = document.getElementById('mindmap');
         const svgContainer = document.getElementById('svg-container');
-        const addNodeButton = document.getElementById('addNode');
-        const deleteNodeButton = document.getElementById('deleteNode');
         const exportBtn = document.getElementById('exportBtn');
         const importBtn = document.getElementById('importBtn');
         const importInput = document.getElementById('importInput');
@@ -147,11 +155,48 @@
             node.id = id || `node-${nodeId++}`;
             node.style.left = `${x}px`;
             node.style.top = `${y}px`;
-            node.textContent = content || `Node ${node.id}`;
+
+            // put text content in new span
+            const text = document.createElement('div');
+            text.className = 'node-text';
+            text.textContent = content || `Node ${node.id}`;
+            node.appendChild(text);
 
             node.addEventListener('dblclick', () => editNode(node));
             node.addEventListener('mousedown', dragStart);
             node.addEventListener('click', selectNode);
+
+
+            // Create add child button or the node
+            const addChildBtn = document.createElement('button');
+            addChildBtn.textContent = 'Add Child';
+            addChildBtn.className = 'add-child-btn'; // For styling
+            addChildBtn.onclick = (event) => {
+                event.stopPropagation(); // Prevent click event from bubbling to parent nodes
+                addNode(node); // Assuming you want to pass the node's id, not the uninitialized 'id' variable
+            };
+            node.appendChild(addChildBtn);
+
+            // Create edit button
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.className = 'edit-btn'; // For styling
+            editBtn.onclick = (event) => {
+                event.stopPropagation(); // Prevent click event from bubbling to parent nodes
+                editNode(node); // Assuming you want to pass the node's id, not the uninitialized 'id' variable
+            };
+            node.appendChild(editBtn);
+
+            // Create delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.className = 'delete-btn'; // For styling
+            deleteBtn.onclick = (event) => {
+              event.stopPropagation(); // Prevent click event from bubbling to parent nodes
+              deleteNode(node);
+              updateConnectors();
+            };
+            node.appendChild(deleteBtn);
 
             mindmap.appendChild(node);
 
@@ -166,14 +211,26 @@
             showDialog(node);
         }
 
+        function isDialogOpen() {
+            const dialog = document.getElementById('customDialog');
+
+            console.log(dialog)
+
+            if(dialog) {
+              return dialog.style.display !== 'none';
+            }
+
+            return false
+        }
+
+        function confirmDialog() {
+          selectedNode.getElementsByClassName('node-text')[0].textContent = document.getElementById('textInput').value;
+          hideDialog();
+        }
+
         // Event listeners for OK and Cancel buttons
         document.getElementById('okButton').addEventListener('click', function() {
-
-          // update the nodes text with the input
-          selectedNode.textContent = document.getElementById('textInput').value;
-
-          // Handle the OK action
-          hideDialog();
+          confirmDialog();
         });
 
         document.getElementById('cancelButton').addEventListener('click', function() {
@@ -181,13 +238,23 @@
           hideDialog();
         });
 
+
+        document.addEventListener('keydown', function(event) {
+
+            if (event.key === 'Enter' && isDialogOpen()) {
+                // Close the dialog or perform any action when the dialog is open and Enter is pressed
+                confirmDialog(); // Assuming you have a function to close the dialog
+            }
+        });
+
+
         // Function to show the dialog
         function showDialog(node) {
           document.getElementById('dialogOverlay').style.display = 'block';
           document.getElementById('customDialog').style.display = 'block';
 
-          // fill the text input with the node's text
-          document.getElementById('textInput').value = node.textContent;
+          // get the node-text element's content and place it in input
+          document.getElementById('textInput').value = node.getElementsByClassName('node-text')[0].textContent;
         }
 
         // Function to hide the dialog
@@ -365,29 +432,12 @@
             updateConnectors();
         }
 
-        addNodeButton.addEventListener('click', () => {
-            if (!selectedNode) {
-                alert("Please select a node first.");
-                return;
-            }
-            const parentRect = selectedNode.getBoundingClientRect();
-            const x = parentRect.right + 50;
-            const y = parentRect.top;
-            createNode(x, y, selectedNode);
-        });
-
-        deleteNodeButton.addEventListener('click', () => {
-            if (!selectedNode) {
-                alert("Please select a node to delete.");
-                return;
-            }
-            if (selectedNode === rootNode) {
-                alert("Cannot delete the root node.");
-                return;
-            }
-            deleteNode(selectedNode);
-            updateConnectors();
-        });
+        function addNode(base_node) {
+          console.log(base_node)
+            const x = base_node.getBoundingClientRect().right + 50;
+            const y = base_node.getBoundingClientRect().top;
+            createNode(x, y, base_node);
+        }
 
         exportBtn.addEventListener('click', exportMindmap);
 
