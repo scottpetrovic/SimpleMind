@@ -6,6 +6,13 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
+    frame: false, // disable the default title bar
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#e7e7e7',
+      symbolColor: 'black',
+      height: 30
+    },
     webPreferences: {
       nodeIntegration: true,
       // Note: For security reasons, you should keep contextIsolation enabled and use contextBridge for IPC

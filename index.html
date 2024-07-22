@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Mindmap App</title>
+    <title>Simple Mind</title>
 
     <!-- 
          allows resources (such as images, stylesheets, and scripts) to be loaded only from the same origin (i.e., your app itself) 
@@ -17,15 +17,24 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+   
+    <div class="title-bar">
+      <div class="title-bar-content">
+        <img style="height: 20px; margin-right: 0.5rem;" src="./simple-mind-logo.png" class="icon" />
+        <span id="app-title">CleanMind Organizer</span>
+      </div>
+    </div>
+
     <svg id="svg-container"></svg>
+
     <div id="mindmap"></div>
     <div id="controls">
-        <button id="exportBtn">
-          <img title="Download JSON file" class="icon" src="./icons/download.svg" />
-        </button>
-        <button id="importBtn">
-          <img title="Import JSON file" class="icon" src="./icons/file-plus.svg" />
-        </button>
+      <button id="importBtn">
+        <img title="Import JSON file" class="icon" src="./icons/file-plus.svg" />
+      </button>
+      <button id="exportBtn">
+        <img title="Download JSON file" class="icon" src="./icons/download.svg" />
+      </button>
         <input type="file" id="importInput" accept=".json">
     </div>
 
@@ -423,7 +432,6 @@
             event.stopPropagation(); // This stops the event from propagating further
             event.preventDefault(); // This prevents any default action that might be associated with the event
         });
-
 
 
     </script>

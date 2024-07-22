@@ -7,6 +7,10 @@
     background-color: #f1f1f1;
   }
 
+  body {
+    margin: 0;
+  }
+
   h2 {
     font-weight: normal;
     font-size: 16px;
@@ -92,17 +96,21 @@
         stroke-width: 2;
     }
     #controls {
-        position: fixed;
-        top: 10px;
-        left: 10px;
+      margin: 10px;
+      position: fixed;
+      z-index: 2;
+      top: 2rem;
     }
     #importInput {
         display: none;
     }
 
     .node-text {
-        pointer-events: none;
-        padding: 0.5rem;
+      pointer-events: none;
+      padding: 0.5rem;
+      max-width: 400px;
+      white-space: normal;
+      text-align: left;
     }
 
     .node button {
@@ -118,4 +126,65 @@
 
     .root-node {
       border: 2px dotted black;
+    }
+
+
+    /* Title bar styles */
+    .title-bar {
+          -webkit-app-region: drag;
+          background-color: #e7e7e7;
+          color: black;
+          position: fixed;
+          left: 0;
+          top: 0;
+          right: 0;
+          z-index: 2;
+      }
+    
+    
+    .title-bar-content {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+    }
+    
+    #app-title {
+      margin-right: 20px;
+    }
+    
+    .menu {
+      position: relative;
+    }
+    
+    .menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    
+    .menu li {
+      position: relative;
+    }
+    .menu li:hover {
+      z-index: 2;
+    }
+    
+    .menu li a {
+      display: block;
+      padding: 10px;
+      color: #fff;
+      text-decoration: none;
+    }
+    
+    .menu li ul {
+      display: none;
+      position: absolute;
+      background-color: #333;
+      border: 1px solid #555;
+      padding: 10px;
+    }
+    
+    .menu li:hover ul {
+      display: block;
     }
