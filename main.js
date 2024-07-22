@@ -1,7 +1,6 @@
 // app - controls the application's event lifecycle
 // BrowserWindow - creates and manages the browser window
 const { app, BrowserWindow, globalShortcut } = require('electron')
-const { ipcRenderer } = require('electron');
 
 const createWindow = () => {
   const win = new BrowserWindow({
