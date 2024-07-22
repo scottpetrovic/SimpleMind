@@ -1,20 +1,322 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <title>Hello from Electron renderer!</title>
-  </head>
-  <body>
-    <h1>Hello from Electron renderer!</h1>
-    <p>👋</p>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Mindmap App</title>
+
+    <!-- 
+         allows resources (such as images, stylesheets, and scripts) to be loaded only from the same origin (i.e., your app itself) 
+         script-src 'self' specifically allows scripts to be executed only if they are loaded from the same origin. 
+    -->
+
+    <!-- adding this currently makes it function odd. TODO: look into to see if this is needed-->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" /> -->
+
+    <style>
+        #svg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .node {
+            position: absolute;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: move;
+            user-select: none;
+            z-index: 1;
+        }
+        .node.selected {
+            border: 2px solid #007bff;
+        }
+        .connector {
+            fill: none;
+            stroke: #999;
+            stroke-width: 2;
+        }
+        #controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+        }
+        #importInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg id="svg-container"></svg>
+    <div id="mindmap"></div>
+    <div id="controls">
+        <button id="addNode">Add Child Node</button>
+        <button id="deleteNode">Delete Selected Node</button>
+        <button id="exportBtn">Export Mindmap</button>
+        <button id="importBtn">Import Mindmap</button>
+        <input type="file" id="importInput" accept=".json">
+    </div>
+
+    <script>
+        const mindmap = document.getElementById('mindmap');
+        const svgContainer = document.getElementById('svg-container');
+        const addNodeButton = document.getElementById('addNode');
+        const deleteNodeButton = document.getElementById('deleteNode');
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const importInput = document.getElementById('importInput');
+        let nodeId = 0;
+        let draggedNode = null;
+        let offsetX, offsetY;
+        let selectedNode = null;
+        let initialDragPosition = { x: 0, y: 0 };
+        let rootNode = null;
+
+        function createNode(x, y, parent = null, id = null, content = null) {
+            const node = document.createElement('div');
+            node.className = 'node';
+            node.id = id || `node-${nodeId++}`;
+            node.style.left = `${x}px`;
+            node.style.top = `${y}px`;
+            node.textContent = content || `Node ${node.id}`;
+
+            node.addEventListener('dblclick', () => editNode(node));
+            node.addEventListener('mousedown', dragStart);
+            node.addEventListener('click', selectNode);
+
+            mindmap.appendChild(node);
+
+            if (parent) {
+                drawConnector(parent, node);
+            }
+
+            return node;
+        }
+
+        function editNode(node) {
+            const text = prompt('Edit node text:', node.textContent);
+            if (text !== null) {
+                node.textContent = text;
+            }
+        }
+
+        function drawConnector(parent, child) {
+            const connector = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            connector.setAttribute('class', 'connector');
+            connector.setAttribute('data-parent', parent.id);
+            connector.setAttribute('data-child', child.id);
+            updateConnector(parent, child, connector);
+            svgContainer.appendChild(connector);
+        }
+
+        function updateConnector(parent, child, connector) {
+            const parentRect = parent.getBoundingClientRect();
+            const childRect = child.getBoundingClientRect();
+            const px = parentRect.left + parentRect.width / 2;
+            const py = parentRect.top + parentRect.height / 2;
+            const cx = childRect.left + childRect.width / 2;
+            const cy = childRect.top + childRect.height / 2;
+
+            const midX = (px + cx) / 2;
+            const midY = (py + cy) / 2;
+            const dx = cx - px;
+            const dy = cy - py;
+            const curveX = midX + dy * 0.5;
+            const curveY = midY - dx * 0.5;
+
+            const path = `M${px},${py} Q${curveX},${curveY} ${cx},${cy}`;
+            connector.setAttribute('d', path);
+        }
+
+        function dragStart(e) {
+            e.stopPropagation();
+            draggedNode = e.target;
+            const rect = draggedNode.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            initialDragPosition = { x: e.clientX, y: e.clientY };
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+        }
+
+        function drag(e) {
+            if (draggedNode) {
+                const dx = e.clientX - initialDragPosition.x;
+                const dy = e.clientY - initialDragPosition.y;
+                moveNodeAndDescendants(draggedNode, dx, dy);
+                initialDragPosition = { x: e.clientX, y: e.clientY };
+                updateConnectors();
+            }
+        }
+
+        function moveNodeAndDescendants(node, dx, dy) {
+            const currentX = parseInt(node.style.left);
+            const currentY = parseInt(node.style.top);
+            node.style.left = `${currentX + dx}px`;
+            node.style.top = `${currentY + dy}px`;
+
+            const children = getChildren(node);
+            children.forEach(child => moveNodeAndDescendants(child, dx, dy));
+        }
+
+        function dragEnd() {
+            draggedNode = null;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', dragEnd);
+        }
+
+        function updateConnectors() {
+            const connectors = svgContainer.getElementsByClassName('connector');
+            Array.from(connectors).forEach(connector => {
+                const parent = document.getElementById(connector.getAttribute('data-parent'));
+                const child = document.getElementById(connector.getAttribute('data-child'));
+                if (parent && child) {
+                    updateConnector(parent, child, connector);
+                }
+            });
+        }
+
+        function selectNode(e) {
+            e.stopPropagation();
+            if (selectedNode) {
+                selectedNode.classList.remove('selected');
+            }
+            selectedNode = e.target;
+            selectedNode.classList.add('selected');
+        }
+
+        function deleteNode(node) {
+            const children = getChildren(node);
+            children.forEach(child => deleteNode(child));
+
+            const connectors = svgContainer.querySelectorAll(`[data-parent="${node.id}"], [data-child="${node.id}"]`);
+            connectors.forEach(connector => connector.remove());
+
+            node.remove();
+
+            if (selectedNode === node) {
+                selectedNode = null;
+            }
+        }
+
+        function getChildren(node) {
+            const connectors = svgContainer.querySelectorAll(`[data-parent="${node.id}"]`);
+            return Array.from(connectors).map(connector => 
+                document.getElementById(connector.getAttribute('data-child'))
+            );
+        }
+
+        function getParent(node) {
+            const connector = svgContainer.querySelector(`[data-child="${node.id}"]`);
+            return connector ? document.getElementById(connector.getAttribute('data-parent')) : null;
+        }
+
+        function exportMindmap() {
+            const nodes = Array.from(document.getElementsByClassName('node'));
+            const connectors = Array.from(svgContainer.getElementsByClassName('connector'));
+
+            const mindmapData = {
+                nodes: nodes.map(node => ({
+                    id: node.id,
+                    content: node.textContent,
+                    x: parseInt(node.style.left),
+                    y: parseInt(node.style.top)
+                })),
+                connectors: connectors.map(connector => ({
+                    parent: connector.getAttribute('data-parent'),
+                    child: connector.getAttribute('data-child')
+                }))
+            };
+
+            const jsonData = JSON.stringify(mindmapData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mindmap.json';
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+
+        function importMindmap(jsonData) {
+            const mindmapData = JSON.parse(jsonData);
+
+            // Clear existing mindmap
+            mindmap.innerHTML = '';
+            svgContainer.innerHTML = '';
+
+            // Create nodes
+            mindmapData.nodes.forEach(nodeData => {
+                createNode(nodeData.x, nodeData.y, null, nodeData.id, nodeData.content);
+            });
+
+            // Create connectors
+            mindmapData.connectors.forEach(connectorData => {
+                const parent = document.getElementById(connectorData.parent);
+                const child = document.getElementById(connectorData.child);
+                if (parent && child) {
+                    drawConnector(parent, child);
+                }
+            });
+
+            // Set root node
+            rootNode = document.getElementById(mindmapData.nodes[0].id);
+            selectNode({ target: rootNode });
+
+            updateConnectors();
+        }
+
+        addNodeButton.addEventListener('click', () => {
+            if (!selectedNode) {
+                alert("Please select a node first.");
+                return;
+            }
+            const parentRect = selectedNode.getBoundingClientRect();
+            const x = parentRect.right + 50;
+            const y = parentRect.top;
+            createNode(x, y, selectedNode);
+        });
+
+        deleteNodeButton.addEventListener('click', () => {
+            if (!selectedNode) {
+                alert("Please select a node to delete.");
+                return;
+            }
+            if (selectedNode === rootNode) {
+                alert("Cannot delete the root node.");
+                return;
+            }
+            deleteNode(selectedNode);
+            updateConnectors();
+        });
+
+        exportBtn.addEventListener('click', exportMindmap);
+
+        importBtn.addEventListener('click', () => {
+            importInput.click();
+        });
+
+        importInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    importMindmap(e.target.result);
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Create initial node
+        rootNode = createNode(100, 100);
+        selectNode({ target: rootNode });
+    </script>
+</body>
 </html>
