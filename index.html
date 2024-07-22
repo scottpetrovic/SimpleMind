@@ -219,8 +219,6 @@
               node.appendChild(deleteBtn);
             }
 
-
-
             mindmap.appendChild(node);
 
             if (parent) {
@@ -297,22 +295,34 @@
         }
 
         function updateConnector(parent, child, connector) {
-            const parentRect = parent.getBoundingClientRect();
-            const childRect = child.getBoundingClientRect();
-            const px = parentRect.left + parentRect.width / 2;
-            const py = parentRect.top + parentRect.height / 2;
-            const cx = childRect.left + childRect.width / 2;
-            const cy = childRect.top + childRect.height / 2;
+          const parentRect = parent.getBoundingClientRect();
+          const childRect = child.getBoundingClientRect();
+          const px = parentRect.left + parentRect.width / 2;
+          const py = parentRect.top + parentRect.height / 2;
+          const cx = childRect.left + childRect.width / 2;
+          const cy = childRect.top + childRect.height / 2;
 
-            const midX = (px + cx) / 2;
-            const midY = (py + cy) / 2;
-            const dx = cx - px;
-            const dy = cy - py;
-            const curveX = midX + dy * 0.5;
-            const curveY = midY - dx * 0.5;
+          // Calculate the angle in radians between the parent and child nodes
+          const angle = Math.atan2(cy - py, cx - px);
 
-            const path = `M${px},${py} Q${curveX},${curveY} ${cx},${cy}`;
-            connector.setAttribute('d', path);
+          // Adjust the curvature based on the angle
+          const curvatureFactor = Math.abs(Math.sin(angle)); // Example adjustment, feel free to modify
+
+          const midX = (px + cx) / 2;
+          const midY = (py + cy) / 2;
+          const dx = cx - px;
+          const dy = cy - py;
+
+          // Determine if the child is below the parent and adjust the curve direction
+          const isChildBelow = cy > py;
+          const curveDirection = isChildBelow ? -1 : 1;
+
+          // Apply curvature factor to control the shape dynamically, adjusting direction based on child's position
+          const curveX = midX + dy * 0.5 * curvatureFactor * curveDirection;
+          const curveY = midY - dx * 0.5 * curvatureFactor * curveDirection;
+
+          const path = `M${px},${py} Q${curveX},${curveY} ${cx},${cy}`;
+          connector.setAttribute('d', path);
         }
 
         function dragStart(e) {
@@ -456,10 +466,28 @@
             updateConnectors();
         }
 
-        function addNode(base_node) {
-            const x = base_node.getBoundingClientRect().right + 50;
-            const y = base_node.getBoundingClientRect().top;
-            createNode(x, y, base_node);
+        function addNode(baseNode) {
+            const offset = 40; // Offset both below and to the right
+
+            let referenceNode = baseNode;
+            const children = getChildren(baseNode); // Assuming children have a class 'node'
+            if (children.length > 0) {
+                referenceNode = children[children.length - 1]; // Use the last child as reference
+            }
+
+            // Get the reference node's position
+            const referenceRect = referenceNode.getBoundingClientRect();
+
+            // 
+            let newX = referenceRect.right + offset 
+             if (children.length > 0) {
+               newX -= baseNode.getBoundingClientRect().right // if we are another child, just be it underneath
+             }
+
+            let newY = referenceRect.bottom + offset
+
+            // Assuming createNode is a function that creates the new node
+            createNode(newX, newY, baseNode); // Pass additional parameters as needed
         }
 
         exportBtn.addEventListener('click', exportMindmap);
