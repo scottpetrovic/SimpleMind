@@ -4,14 +4,13 @@ const { app, BrowserWindow, globalShortcut } = require('electron')
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 1024,
-    height: 768,
+    width: 800,
+    height: 600,
     frame: false, // disable the default title bar
     titleBarStyle: 'hidden',
     titleBarOverlay: {
       color: '#e7e7e7',
       symbolColor: 'black',
-      height: 10
     },
     icon: './icons/icon.ico',
     webPreferences: {

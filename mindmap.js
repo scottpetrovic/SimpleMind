@@ -405,10 +405,11 @@ function createRootNode() {
 exportBtn.addEventListener("click", exportMindmap);
 
 newBtn.addEventListener("click", (e) => {
-  // reset mindmap
-  console.log('reset mindmap')
+  mindmap.innerHTML = "";  // remove all the nodes
+  svgContainer.innerHTML = "";  // clear connectors
+  nodeId = 0;   // reset node id since we are starting over
+  createRootNode()  // start with a new root node
 })
-
 
 importBtn.addEventListener("click", () => {
   importInput.click();
@@ -454,7 +455,6 @@ document.addEventListener("mousedown", (e) => {
       rootNode.dispatchEvent(simulatedEvent);
     }
   });
-  
 
 createRootNode()
 

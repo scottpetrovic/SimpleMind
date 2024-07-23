@@ -130,8 +130,7 @@
     .node button {
       display: none;
       transition: opacity 0.3s;
-      /* border: 1px solid transparent; */
-      border: none;
+      border: 1px solid #66bed2;
     }
     .node:hover button {
       opacity: 1.0;
