@@ -67,7 +67,7 @@
       margin: auto auto;
       text-align: center;
       width: 300px;
-      top: 300px;
+      top: 100px;
     }
 
     /* Overlay covering the entire screen */
@@ -96,14 +96,14 @@
         position: absolute;
         background-color: white;
         border: 1px solid #ccc;
-        padding: 0.5rem;
+        padding: 0;
         cursor: move;
         user-select: none;
         z-index: 1;
         text-align: center;
         white-space: nowrap; /* Prevent text wrapping when going off screen */
         display: inline-flex;
-        border-radius: 5px;
+        border-radius: 2px;
     }
     .node.selected {
         border: 2px solid #007bff;
@@ -125,7 +125,7 @@
 
     .node-text {
       pointer-events: none;
-      padding: 0.5rem;
+      padding: 0.8rem;
       text-align: left;
     }
 
@@ -133,6 +133,7 @@
       display: none;
       transition: opacity 0.3s;
       border: 1px solid #66bed2;
+      border-radius: 15px;
     }
     .node:hover button {
       opacity: 1.0;
@@ -142,11 +143,10 @@
     .color-chip {
       width: 7px;
       display: inline-flex;
-      border-radius: 3px;
     }
 
     .root-node {
-      border: 2px dotted black;
+      border: 5px solid #979797
     }
 
     .root-node .node-text {
@@ -176,4 +176,6 @@
   position: absolute;
   bottom: -20px;
   left: 4px;
+  margin-top:20px;
+  box-sizing: border-box;
 }

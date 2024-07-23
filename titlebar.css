@@ -14,13 +14,18 @@
   #importBtn, #exportBtn, #newBtn {
     -webkit-app-region: no-drag;
     background: none;
-    box-shadow: none;
-    font-size: 14px;
-    padding: 0.1rem 0.5rem;
+    padding: 0.4rem 0.5rem;
     transition: background 0.3s;
+    display: inline-flex;
+    align-items: flex-end;
+
   }
   #importBtn:hover, #exportBtn:hover, #newBtn:hover {
     background: rgb(236, 236, 236);
+  }
+
+  .title-bar-button-text {
+    margin-right: 0.4rem;
   }
 
   
@@ -28,6 +33,12 @@
     display: flex;
     align-items: center;
     padding: 0.5rem;
+  }
+
+  .title-bar-content img.icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 0.5rem;
   }
   
   #app-title {
