@@ -33,17 +33,19 @@ function createNode(nodeConfig) {
     <div id="${localNodeId}" class="node ${rootNodeClass} pop-in" style="left: ${nodeConfig.x_position}px; top: ${nodeConfig.y_position}px;">
       <span class="color-chip" style="background-color: ${backgroundColor};"></span>
       <span class="node-text">${nodeContent}</span>
-      <button class="add-child-btn" title="Add Child">
-        <img class="icon pop-in" src="./icons/plus.svg" />
-      </button>
-      <button class="edit-btn" title="Edit Name">
-        <img class="icon pop-in" src="./icons/edit-3.svg" />
-      </button>
-      ${!nodeConfig.is_root_node ? `
-      <button class="delete-btn" title="Delete">
-        <img class="icon pop-in" src="./icons/x.svg" />
-      </button>` : ''}
-    </div>
+      
+      <div class="node-actions-container">
+        <button class="add-child-btn pop-in" title="Add Child">
+          <img class="icon" src="./icons/plus.svg" />
+        </button>
+        <button class="edit-btn pop-in" title="Edit Name">
+          <img class="icon" src="./icons/edit-3.svg" />
+        </button>
+        ${!nodeConfig.is_root_node ? `<button class="delete-btn pop-in" title="Delete">
+              <img class="icon" src="./icons/x.svg" /></button>` : ''}
+      </div>
+
+      </div>
   `;
 
   // put the HTML string template into an actual DOM element to work with
