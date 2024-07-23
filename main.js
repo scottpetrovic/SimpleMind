@@ -13,6 +13,7 @@ const createWindow = () => {
       symbolColor: 'black',
       height: 10
     },
+    icon: './icons/icon.ico',
     webPreferences: {
       nodeIntegration: true,
       // Note: For security reasons, you should keep contextIsolation enabled and use contextBridge for IPC
