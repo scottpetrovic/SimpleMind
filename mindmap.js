@@ -118,24 +118,6 @@ function confirmDialog() {
   hideDialog();
 }
 
-// Event listeners for OK and Cancel buttons
-document.getElementById("okButton").addEventListener("click", function () {
-  confirmDialog();
-});
-
-document.getElementById("cancelButton").addEventListener("click", function () {
-  // Simply hide the dialog
-  hideDialog();
-});
-
-document.addEventListener("keydown", function (event) {
-  if (event.key === "Enter" && isDialogOpen()) {
-    // Close the dialog or perform any action when the dialog is open and Enter is pressed
-    confirmDialog(); // Assuming you have a function to close the dialog
-  }
-});
-
-// Function to show the dialog
 function showDialog(node) {
   document.getElementById("dialogOverlay").style.display = "block";
   document.getElementById("customDialog").style.display = "block";
@@ -155,7 +137,6 @@ function showDialog(node) {
   document.getElementById("textInput").select();
 }
 
-// Function to hide the dialog
 function hideDialog() {
   document.getElementById("dialogOverlay").style.display = "none";
   document.getElementById("customDialog").style.display = "none";
@@ -405,6 +386,21 @@ function addNode(baseNode) {
   createNode(nodeConfig); // Pass additional parameters as needed
 }
 
+function createRootNode() {
+    const nodeConfig = {
+        x_position: 300,
+        y_position: 300,
+        parent: null,
+        node_id: null,
+        node_content: "Root Node",
+        is_root_node: true,
+        color: "rgb(228, 228, 228)",
+      };
+      
+      rootNode = createNode(nodeConfig);
+      selectNode({ target: rootNode });
+}
+
 exportBtn.addEventListener("click", exportMindmap);
 
 importBtn.addEventListener("click", () => {
@@ -422,31 +418,37 @@ importInput.addEventListener("change", (e) => {
   }
 });
 
-// Create initial node
-const isRootNode = true;
+// Event listeners for OK and Cancel dialog buttons
+document.getElementById("okButton").addEventListener("click", function () {
+    confirmDialog();
+  });
+  
+document.getElementById("cancelButton").addEventListener("click", function () {
+// Simply hide the dialog
+hideDialog();
+});
 
-const nodeConfig = {
-  x_position: 300,
-  y_position: 300,
-  parent: null,
-  node_id: null,
-  node_content: "Root Node",
-  is_root_node: true,
-  color: "rgb(228, 228, 228)",
-};
-
-rootNode = createNode(nodeConfig);
-selectNode({ target: rootNode });
+document.addEventListener("keydown", function (event) {
+if (event.key === "Enter" && isDialogOpen()) {
+    // Close the dialog or perform any action when the dialog is open and Enter is pressed
+    confirmDialog(); // Assuming you have a function to close the dialog
+}
+});
 
 // if someone clicks and starts dragging in the canvas, treat that as moving the root node
 document.addEventListener("mousedown", (e) => {
-  if (!e.target.classList.contains("node")) {
-    const simulatedEvent = new MouseEvent("mousedown", {
-      bubbles: true,
-      cancelable: true,
-      clientX: e.clientX,
-      clientY: e.clientY,
-    });
-    rootNode.dispatchEvent(simulatedEvent);
-  }
-});
+    if (!e.target.classList.contains("node")) {
+      const simulatedEvent = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+        clientX: e.clientX,
+        clientY: e.clientY,
+      });
+      rootNode.dispatchEvent(simulatedEvent);
+    }
+  });
+  
+
+createRootNode()
+
+
