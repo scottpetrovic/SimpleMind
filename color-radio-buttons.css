@@ -1,0 +1,22 @@
+ /* Hide radio buttons visually but remain accessible */
+ .color-radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Style labels to look like color swatches */
+.color-label {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    cursor: pointer;
+    border: 3px solid #fff; /* White border for better visibility */
+}
+
+/* Change border color when radio button is selected */
+.color-radio:checked + .color-label {
+    border-color: rgb(34, 196, 236); /* Black border for selected swatch */
+}

@@ -15,28 +15,29 @@
 
   <!-- add style.css-->
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="color-radio-buttons.css">
 </head>
 <body>
    
     <div class="title-bar">
       <div class="title-bar-content">
-        <img style="height: 20px; margin-right: 0.5rem;" src="./simple-mind-logo.png" class="icon" />
-        <span id="app-title">CleanMind Organizer</span>
+        <img style="width: 30px; height: 30px; margin-right: 0.5rem;" src="./simple-mind-logo.png" class="icon" />
+
+        <button id="importBtn" title="Import JSON file">Open
+          <img class="icon" src="./icons/file-plus.svg" />
+        </button>
+        <button id="exportBtn" title="Download JSON file">Export
+          <img  class="icon" src="./icons/download.svg" />
+        </button>
+        <input type="file" id="importInput" accept=".json">
+
+
       </div>
     </div>
 
     <svg id="svg-container"></svg>
 
     <div id="mindmap"></div>
-    <div id="controls">
-      <button id="importBtn" title="Import JSON file">
-        <img class="icon" src="./icons/file-plus.svg" />
-      </button>
-      <button id="exportBtn" title="Download JSON file">
-        <img  class="icon" src="./icons/download.svg" />
-      </button>
-        <input type="file" id="importInput" accept=".json">
-    </div>
 
     <div id="dialogOverlay"></div>
     <div id="customDialog">
@@ -45,23 +46,23 @@
 
       <!-- create a series of color chips to select from a radio button list-->
       <div class="color-chips-selection">
-        <input type="radio" id="color1" name="color" value="rgb(228, 228, 228)">
-        <label for="color1" style="background-color: rgb(228, 228, 228);"></label>
+        <input type="radio" id="color1" name="color" class="color-radio" value="rgb(228, 228, 228)">
+        <label for="color1" class="color-label" style="background-color: rgb(228, 228, 228);"></label>
 
-        <input type="radio" id="color2" name="color" value="rgb(164, 245, 107)">
-        <label for="color2" style="background-color: rgb(164, 245, 107);"></label>
+        <input type="radio" id="color2" name="color" class="color-radio" value="rgb(164, 245, 107)">
+        <label for="color2" class="color-label" style="background-color: rgb(164, 245, 107);"></label>
 
-        <input type="radio" id="color3" name="color" value="rgb(138, 138, 255)">
-        <label for="color3" style="background-color: rgb(138, 138, 255);"></label>
+        <input type="radio" id="color3" name="color" class="color-radio" value="rgb(138, 138, 255)">
+        <label for="color3" class="color-label" style="background-color: rgb(138, 138, 255);"></label>
 
-        <input type="radio" id="color4" name="color" value="rgb(255, 255, 135)">
-        <label for="color4" style="background-color: rgb(255, 255, 135);"></label>
+        <input type="radio" id="color4" name="color" class="color-radio" value="rgb(255, 255, 135)">
+        <label for="color4" class="color-label" style="background-color: rgb(255, 255, 135);"></label>
 
-        <input type="radio" id="color5" name="color" value="rgb(255, 121, 255)">
-        <label for="color5" style="background-color: rgb(255, 121, 255);"></label>
+        <input type="radio" id="color5" name="color" class="color-radio" value="rgb(255, 121, 255)">
+        <label for="color5" class="color-label" style="background-color: rgb(255, 121, 255);"></label>
 
-        <input type="radio" id="color6" name="color" value="rgb(255, 181, 131)">
-        <label for="color6" style="background-color: rgb(255, 181, 131);"></label>
+        <input type="radio" id="color6" name="color" class="color-radio" value="rgb(255, 181, 131)">
+        <label for="color6" class="color-label" style="background-color: rgb(255, 181, 131);"></label>
       </div>
 
 

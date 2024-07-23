@@ -11,7 +11,7 @@ const createWindow = () => {
     titleBarOverlay: {
       color: '#e7e7e7',
       symbolColor: 'black',
-      height: 30
+      height: 10
     },
     webPreferences: {
       nodeIntegration: true,
