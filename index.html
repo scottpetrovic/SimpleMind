@@ -102,16 +102,20 @@
             } else {
               node.className = 'node';
             }
+            node.classList.add('pop-in');
 
             node.id = nodeConfig.node_id || `node-${nodeId++}`;
             node.style.left = `${nodeConfig.x_position}px`;
             node.style.top = `${nodeConfig.y_position}px`;
+
 
             // put text content in new span
             const text = document.createElement('div');
             text.className = 'node-text';
             text.textContent = nodeConfig.node_content || `Node ${node.id}`;
             node.appendChild(text);
+
+            
 
             node.addEventListener('dblclick', () => editNode(node));
             node.addEventListener('mousedown', dragStart);

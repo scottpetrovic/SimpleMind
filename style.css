@@ -138,6 +138,25 @@
   margin-bottom: 1rem;
 }
 
+/* CSS */
+@keyframes popIn {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.25); /* Overshoot to 120% of the final size */
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1); /* Settle back to the original size */
+  }
+}
+
+.pop-in {
+  animation: popIn 0.4s ease-out forwards;
+}
+
     .color-chips-selection label {
       display: inline-block;
       width: 20px;
