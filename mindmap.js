@@ -281,6 +281,14 @@ function getParent(node) {
     : null;
 }
 
+// Not sure why this is needed, but right now the text 
+// is adding spaces and \r characters
+function cleanTextInput(inText) {
+  let cleanText = inText.replace(/[\n\r]/g, ''); // remove all \n and \r
+  cleanText = cleanText.trim(); // trim leading and trailing spaces
+  return cleanText  
+}
+
 function exportMindmap() {
   const nodes = Array.from(document.getElementsByClassName("node"));
   const connectors = Array.from(
@@ -290,7 +298,7 @@ function exportMindmap() {
   const mindmapData = {
     nodes: nodes.map((node) => ({
       id: node.id,
-      content: node.textContent,
+      content: cleanTextInput(node.textContent),
       color: node.getElementsByClassName("color-chip")[0].style.backgroundColor,
       x: parseInt(node.style.left),
       y: parseInt(node.style.top)
