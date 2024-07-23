@@ -216,6 +216,12 @@
 
           // get the node-text element's content and place it in input
           document.getElementById('textInput').value = node.getElementsByClassName('node-text')[0].textContent;
+
+          // add the node's text color and select the appropriate radio button
+          const color = node.getElementsByClassName('color-chip')[0].style.backgroundColor;
+          const colorRadio = document.querySelector(`input[value="${color}"]`);
+          colorRadio.checked = true;
+
           document.getElementById('textInput').focus();
           document.getElementById('textInput').select();
 
