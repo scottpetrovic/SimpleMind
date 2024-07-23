@@ -55,17 +55,19 @@
 }
 
     #customDialog {
-      position: fixed; /* Use fixed positioning */
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); /* Center the dialog */
-      z-index: 1000; /* Ensure it's above other content */
-      background-color: white; /* Background color */
-      border: 1px solid #ccc; /* Border to look like a box */
-      border-radius: 5px; /* Optional: rounded corners */
-      padding: 20px; /* Padding inside the dialog */
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add some shadow for depth */
-      display: none; /* Start hidden */
+      position: relative;
+      transform: translate(0, 51%);
+      z-index: 1000;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: none;
+      margin: auto auto;
+      text-align: center;
+      width: 300px;
+      top: 300px;
     }
 
     /* Overlay covering the entire screen */
