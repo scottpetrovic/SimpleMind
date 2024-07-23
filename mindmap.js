@@ -9,9 +9,9 @@ let offsetX, offsetY;
 let selectedNode = null;
 let initialDragPosition = { x: 0, y: 0 };
 let rootNode = null;
+const defaultColor = "rgb(228, 228, 228)";
 
 function createNode(nodeConfig) {
-  const node = document.createElement("div");
 
   /*
     const nodeConfig = {
@@ -24,69 +24,56 @@ function createNode(nodeConfig) {
         color: 'green'
     };*/
 
-  if (nodeConfig.is_root_node) {
-    node.className = "node root-node";
-  } else {
-    node.className = "node";
-  }
-  node.classList.add("pop-in");
+  const localNodeId = nodeConfig.node_id || `node-${nodeId++}`; // Renamed variable to avoid shadowing
+  const rootNodeClass = nodeConfig.is_root_node ? "root-node" : "";
+  const backgroundColor = nodeConfig.color || defaultColor;
+  const nodeContent = nodeConfig.node_content || `Node ${localNodeId}`; // Use the renamed variable
 
-  node.id = nodeConfig.node_id || `node-${nodeId++}`;
-  node.style.left = `${nodeConfig.x_position}px`;
-  node.style.top = `${nodeConfig.y_position}px`;
+  const nodeHTMLTemplate = `
+    <div id="${localNodeId}" class="node ${rootNodeClass} pop-in" style="left: ${nodeConfig.x_position}px; top: ${nodeConfig.y_position}px;">
+      <span class="color-chip" style="background-color: ${backgroundColor};"></span>
+      <span class="node-text">${nodeContent}</span>
+      <button class="add-child-btn" title="Add Child">
+        <img class="icon pop-in" src="./icons/plus.svg" />
+      </button>
+      <button class="edit-btn" title="Edit Name">
+        <img class="icon pop-in" src="./icons/edit-3.svg" />
+      </button>
+      ${!nodeConfig.is_root_node ? `
+      <button class="delete-btn" title="Delete">
+        <img class="icon pop-in" src="./icons/x.svg" />
+      </button>` : ''}
+    </div>
+  `;
 
-  // create a square for the color status
-  const color = document.createElement("span");
-  color.className = "color-chip";
-  color.style.backgroundColor = nodeConfig.color || "rgb(228, 228, 228)";
-  node.appendChild(color);
+  // put the HTML string template into an actual DOM element to work with
+  // this allows us to do things like add event listeners
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = nodeHTMLTemplate.trim();
+  const node = tempDiv.firstChild;
 
-  // put text content in new span
-  const text = document.createElement("span");
-  text.className = "node-text";
-  text.textContent = nodeConfig.node_content || `Node ${node.id}`;
-  node.appendChild(text);
-
+  // event listeners
   node.addEventListener("dblclick", () => editNode(node));
   node.addEventListener("mousedown", dragStart);
   node.addEventListener("click", selectNode);
 
-  // Create add child button or the node
-  const addChildBtn = document.createElement("button");
-  addChildBtn.innerHTML = '<img class="icon pop-in" src="./icons/plus.svg" />';
-  addChildBtn.className = "add-child-btn"; // For styling
-  addChildBtn.title = "Add Child";
-  addChildBtn.onclick = (event) => {
-    event.stopPropagation(); // Prevent click event from bubbling to parent nodes
-    addNode(node); // Assuming you want to pass the node's id, not the uninitialized 'id' variable
+  // Attach event listeners to buttons
+  node.querySelector(".add-child-btn").onclick = (event) => {
+    event.stopPropagation();
+    addNode(node);
   };
-  node.appendChild(addChildBtn);
 
-  // Create edit button
-  const editBtn = document.createElement("button");
-  editBtn.innerHTML = '<img class="icon pop-in" src="./icons/edit-3.svg" />';
-  editBtn.className = "edit-btn"; // For styling
-  editBtn.title = "Edit Name";
-  editBtn.onclick = (event) => {
-    event.stopPropagation(); // Prevent click event from bubbling to parent nodes
-    editNode(node); // Assuming you want to pass the node's id, not the uninitialized 'id' variable
+  node.querySelector(".edit-btn").onclick = (event) => {
+    event.stopPropagation();
+    editNode(node);
   };
-  node.appendChild(editBtn);
 
-  // Create delete button
-  // root node cannot be deleted
-  if (nodeConfig.is_root_node === false) {
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.innerHTML = '<img class="icon pop-in" src="./icons/x.svg" />';
-    deleteBtn.className = "delete-btn"; // For styling
-    deleteBtn.title = "Delete";
-    deleteBtn.onclick = (event) => {
-      event.stopPropagation(); // Prevent click event from bubbling to parent nodes
+  if (!nodeConfig.is_root_node) {
+    node.querySelector(".delete-btn").onclick = (event) => {
+      event.stopPropagation();
       deleteNode(node);
       updateConnectors();
     };
-    node.appendChild(deleteBtn);
   }
 
   mindmap.appendChild(node);
@@ -394,7 +381,7 @@ function createRootNode() {
         node_id: null,
         node_content: "Root Node",
         is_root_node: true,
-        color: "rgb(228, 228, 228)",
+        color: defaultColor,
       };
       
       rootNode = createNode(nodeConfig);
