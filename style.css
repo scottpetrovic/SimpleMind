@@ -6,6 +6,7 @@
   html {
     background: url('./background.png') repeat center center fixed;
     background-color: #f1f1f1;
+    overflow: hidden; /* turn off scrollbars for now */
   }
 
   body {
@@ -147,10 +148,6 @@
       border: 2px dotted black;
     }
 
-.color-chips-selection {
-  margin-bottom: 1rem;
-}
-
 /* CSS */
 @keyframes popIn {
   0% {
@@ -169,84 +166,3 @@
 .pop-in {
   animation: popIn 0.4s ease-out forwards;
 }
-
-    .color-chips-selection label {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #e9e9e9;
-    }
-
-
-    /* Title bar styles */
-    .title-bar {
-          -webkit-app-region: drag;
-          background-color: #e7e7e7;
-          color: black;
-          position: fixed;
-          left: 0;
-          top: 0;
-          right: 0;
-          z-index: 2;
-      }
-    
-    /* Exclude buttons from the draggable area */
-    #importBtn, #exportBtn {
-      -webkit-app-region: no-drag;
-      background: none;
-      box-shadow: none;
-      font-size: 14px;
-      padding: 0.1rem 0.5rem;
-      transition: background 0.3s;
-    }
-    #importBtn:hover, #exportBtn:hover {
-      background: rgb(236, 236, 236);
-    }
-
-    
-    .title-bar-content {
-      display: flex;
-      align-items: center;
-      padding: 0.5rem;
-    }
-    
-    #app-title {
-      margin-right: 20px;
-    }
-    
-    .menu {
-      position: relative;
-    }
-    
-    .menu ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-    }
-    
-    .menu li {
-      position: relative;
-    }
-    .menu li:hover {
-      z-index: 2;
-    }
-    
-    .menu li a {
-      display: block;
-      padding: 10px;
-      color: #fff;
-      text-decoration: none;
-    }
-    
-    .menu li ul {
-      display: none;
-      position: absolute;
-      background-color: #333;
-      border: 1px solid #555;
-      padding: 10px;
-    }
-    
-    .menu li:hover ul {
-      display: block;
-    }
