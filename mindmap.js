@@ -88,6 +88,8 @@ function createNode(nodeConfig) {
 }
 
 function editNode(node) {
+  // change selected node to make sure we apply results to correct one
+  selectedNode = node;
   showDialog(node);
 }
 
@@ -105,6 +107,7 @@ function confirmDialog() {
     color;
 
   hideDialog();
+  updateConnectors(); // updates color of connectors
 }
 
 function showDialog(node) {
@@ -172,6 +175,11 @@ function updateConnector(parent, child, connector) {
 
   const path = `M${px},${py} Q${curveX},${curveY} ${cx},${cy}`;
   connector.setAttribute("d", path);
+
+  // Grab the color of the child node and apply it to the connector
+  const colorChip = child.querySelector('.color-chip');
+  const childColor = colorChip.style.backgroundColor;
+  connector.setAttribute("stroke", childColor);
 }
 
 function dragStart(e) {

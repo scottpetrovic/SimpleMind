@@ -108,8 +108,8 @@
     }
     .connector {
         fill: none;
-        stroke: #3c94f8;
         stroke-width: 2;
+        /* the color on the node will determine the color of the connector */
     }
     #controls {
       margin: 10px;
