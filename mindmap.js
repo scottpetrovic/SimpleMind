@@ -2,6 +2,8 @@ const mindmap = document.getElementById("mindmap");
 const svgContainer = document.getElementById("svg-container");
 const exportBtn = document.getElementById("exportBtn");
 const importBtn = document.getElementById("importBtn");
+const newBtn = document.getElementById("newBtn");
+
 const importInput = document.getElementById("importInput");
 let nodeId = 0;
 let draggedNode = null;
@@ -9,7 +11,7 @@ let offsetX, offsetY;
 let selectedNode = null;
 let initialDragPosition = { x: 0, y: 0 };
 let rootNode = null;
-const defaultColor = "rgb(228, 228, 228)";
+const defaultColor = "rgb(141, 141, 141)";
 
 function createNode(nodeConfig) {
 
@@ -401,6 +403,12 @@ function createRootNode() {
 }
 
 exportBtn.addEventListener("click", exportMindmap);
+
+newBtn.addEventListener("click", (e) => {
+  // reset mindmap
+  console.log('reset mindmap')
+})
+
 
 importBtn.addEventListener("click", () => {
   importInput.click();
