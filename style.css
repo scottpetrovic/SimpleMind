@@ -148,6 +148,10 @@
       border: 2px dotted black;
     }
 
+    .root-node .node-text {
+      font-weight: bold;
+    }
+
 /* CSS */
 @keyframes popIn {
   0% {

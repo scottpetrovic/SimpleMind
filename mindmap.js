@@ -291,7 +291,7 @@ function exportMindmap() {
       content: node.textContent,
       color: node.getElementsByClassName("color-chip")[0].style.backgroundColor,
       x: parseInt(node.style.left),
-      y: parseInt(node.style.top),
+      y: parseInt(node.style.top)
     })),
     connectors: connectors.map((connector) => ({
       parent: connector.getAttribute("data-parent"),
@@ -326,7 +326,6 @@ function importMindmap(jsonData) {
       parent: null,
       node_id: nodeData.id,
       node_content: nodeData.content,
-      is_root_node: false,
       color: nodeData.color,
     };
 
@@ -344,6 +343,9 @@ function importMindmap(jsonData) {
 
   // Set root node
   rootNode = document.getElementById(mindmapData.nodes[0].id);
+  // add root-node class to root node
+  rootNode.classList.add("root-node");
+
   selectNode({ target: rootNode });
 
   updateConnectors();
