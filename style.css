@@ -24,6 +24,7 @@
     background: white;
     margin: 0 0.25rem;
     cursor: pointer;
+    box-shadow: 2px 2px 2px rgb(218, 218, 218);
   }
   button:hover {
     background: rgb(226, 226, 226);
@@ -39,6 +40,10 @@
     box-shadow: 1px 2px 3px #ababab;
   }
 
+.icon {
+  width: 14px;
+  height: 14px
+}
 
     #customDialog {
       position: fixed; /* Use fixed positioning */
@@ -86,6 +91,8 @@
         z-index: 1;
         text-align: center;
         white-space: nowrap; /* Prevent text wrapping when going off screen */
+        display: inline-flex;
+        border-radius: 5px;
     }
     .node.selected {
         border: 2px solid #007bff;
@@ -114,18 +121,18 @@
     }
 
     .node button {
-      opacity: 0.3;
+      display: none;
       transition: opacity 0.3s;
       /* border: 1px solid transparent; */
       border: none;
     }
     .node:hover button {
       opacity: 0.7;
+      display: inline-flex;
     }
 
     .color-chip {
       width: 7px;
-      height: 27px;
       display: inline-flex;
       border-radius: 3px;
     }

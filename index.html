@@ -29,11 +29,11 @@
 
     <div id="mindmap"></div>
     <div id="controls">
-      <button id="importBtn">
-        <img title="Import JSON file" class="icon" src="./icons/file-plus.svg" />
+      <button id="importBtn" title="Import JSON file">
+        <img class="icon" src="./icons/file-plus.svg" />
       </button>
-      <button id="exportBtn">
-        <img title="Download JSON file" class="icon" src="./icons/download.svg" />
+      <button id="exportBtn" title="Download JSON file">
+        <img  class="icon" src="./icons/download.svg" />
       </button>
         <input type="file" id="importInput" accept=".json">
     </div>
@@ -45,23 +45,23 @@
 
       <!-- create a series of color chips to select from a radio button list-->
       <div class="color-chips-selection">
-        <input type="radio" id="color1" name="color" value="white">
-        <label for="color1" style="background-color: white;"></label>
+        <input type="radio" id="color1" name="color" value="rgb(228, 228, 228)">
+        <label for="color1" style="background-color: rgb(228, 228, 228);"></label>
 
-        <input type="radio" id="color2" name="color" value="green">
-        <label for="color2" style="background-color: green;"></label>
+        <input type="radio" id="color2" name="color" value="rgb(164, 245, 107)">
+        <label for="color2" style="background-color: rgb(164, 245, 107);"></label>
 
-        <input type="radio" id="color3" name="color" value="blue">
-        <label for="color3" style="background-color: blue;"></label>
+        <input type="radio" id="color3" name="color" value="rgb(138, 138, 255)">
+        <label for="color3" style="background-color: rgb(138, 138, 255);"></label>
 
-        <input type="radio" id="color4" name="color" value="yellow">
-        <label for="color4" style="background-color: yellow;"></label>
+        <input type="radio" id="color4" name="color" value="rgb(255, 255, 135)">
+        <label for="color4" style="background-color: rgb(255, 255, 135);"></label>
 
-        <input type="radio" id="color5" name="color" value="purple">
-        <label for="color5" style="background-color: purple;"></label>
+        <input type="radio" id="color5" name="color" value="rgb(255, 121, 255)">
+        <label for="color5" style="background-color: rgb(255, 121, 255);"></label>
 
-        <input type="radio" id="color6" name="color" value="red">
-        <label for="color6" style="background-color: red;"></label>
+        <input type="radio" id="color6" name="color" value="rgb(255, 181, 131)">
+        <label for="color6" style="background-color: rgb(255, 181, 131);"></label>
       </div>
 
 
@@ -109,8 +109,15 @@
             node.style.top = `${nodeConfig.y_position}px`;
 
 
+            // create a square for the color status
+            const color = document.createElement('span');
+            color.className = 'color-chip';
+            color.style.backgroundColor = nodeConfig.color || 'rgb(228, 228, 228)';
+            node.appendChild(color);
+
+
             // put text content in new span
-            const text = document.createElement('div');
+            const text = document.createElement('span');
             text.className = 'node-text';
             text.textContent = nodeConfig.node_content || `Node ${node.id}`;
             node.appendChild(text);
@@ -121,15 +128,10 @@
             node.addEventListener('mousedown', dragStart);
             node.addEventListener('click', selectNode);
 
-            // create a square for the color status
-            const color = document.createElement('span');
-            color.className = 'color-chip';
-            color.style.backgroundColor = nodeConfig.color || 'white';
-            node.appendChild(color);
 
             // Create add child button or the node
             const addChildBtn = document.createElement('button');
-            addChildBtn.innerHTML = '<img class="icon" src="./icons/plus.svg" />';
+            addChildBtn.innerHTML = '<img class="icon pop-in" src="./icons/plus.svg" />';
             addChildBtn.className = 'add-child-btn'; // For styling
             addChildBtn.title = 'Add Child';
             addChildBtn.onclick = (event) => {
@@ -140,7 +142,7 @@
 
             // Create edit button
             const editBtn = document.createElement('button');
-            editBtn.innerHTML = '<img class="icon" src="./icons/edit-3.svg" />';
+            editBtn.innerHTML = '<img class="icon pop-in" src="./icons/edit-3.svg" />';
             editBtn.className = 'edit-btn'; // For styling
             editBtn.title = 'Edit Name';
             editBtn.onclick = (event) => {
@@ -154,7 +156,7 @@
             if(nodeConfig.is_root_node === false) {
               const deleteBtn = document.createElement('button');
               deleteBtn.textContent = 'Delete';
-              deleteBtn.innerHTML = '<img class="icon" src="./icons/x.svg" />';
+              deleteBtn.innerHTML = '<img class="icon pop-in" src="./icons/x.svg" />';
               deleteBtn.className = 'delete-btn'; // For styling
               deleteBtn.title = 'Delete';
               deleteBtn.onclick = (event) => {
@@ -224,6 +226,7 @@
           // add the node's text color and select the appropriate radio button
           const color = node.getElementsByClassName('color-chip')[0].style.backgroundColor;
           const colorRadio = document.querySelector(`input[value="${color}"]`);
+
           colorRadio.checked = true;
 
           document.getElementById('textInput').focus();
@@ -498,7 +501,7 @@
                   node_id: null,
                   node_content: 'Root Node',
                   is_root_node: true,
-                  color: null
+                  color: 'rgb(228, 228, 228)'
               };
 
         
