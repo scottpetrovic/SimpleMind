@@ -1,24 +1,22 @@
 # Simple MindMap
-An electron application that helps you gather your thoughts
+Build a mind map to help organize your ideas or todo items. This was built as an Electron application to learn how it works.
+
+<img src="screenshot.png" alt="Mind mapping software" />
 
 ## Feature Set
 - Adding nodes, renaming nodes, deleting nodes
 - Multiple levels of children
 - dragging nodes around for positioning
-- Export and Import data with JSON format.
+- Export and Import mind map to JSON format.
+- Color labeling
 
 
 ## TODO
-- Cannot do popups for editing...so need to do another way
-- Create github project 
-- How to create better Electron experience/UI to feel more like a VS code
 - How to build binaries for Windows and Linux
 - How to publish binaries out to github
-- Node connector curve takes into account position
-- Create toolbar for options instead of buttons
 
 ## Building
-You need node.js for this.
+You need node.js for this. I am on version 18
 
     npm install
     npm run start
