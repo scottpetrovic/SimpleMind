@@ -16,6 +16,8 @@ You need node.js for this. I am on version 18
     npm install
     npm run start
 
+## TODO
+When importing JSON file, something isn't being saved/loaded right as dragging starts acting bugged out
 
 ## Packaging and Distributing
 Electron doesn't come with this ability by default, so the NPM "@electron-forge/cli" 

@@ -243,6 +243,13 @@ function drag(e) {
     initialDragPosition = { x: e.clientX, y: e.clientY };
     updateConnectors();
 
+
+    // clear  all potential-parent classes from DOM. we only want one element which we will check next
+    const potentialParents = document.getElementsByClassName('potential-parent');
+    Array.from(potentialParents).forEach((potentialParent) => {
+      potentialParent.classList.remove('potential-parent');
+    });
+
     // Check for potential new parent node under cursor to reparent node
     // the class helps us to visually see where the node will be moved to
     potentialParent = findNodeUnderCursor(e.clientX, e.clientY);
@@ -271,9 +278,11 @@ function dragEnd() {
     changeParent(draggedNode, potentialParent);
   }
 
-  if (potentialParent) {
+  // remoe all potential-parent classes from DOM. There could be multiple
+  const potentialParents = document.getElementsByClassName('potential-parent');
+  Array.from(potentialParents).forEach((potentialParent) => {
     potentialParent.classList.remove('potential-parent');
-  }
+  });
 
   draggedNode = null;
   potentialParent = null;
