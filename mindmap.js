@@ -12,7 +12,6 @@ let selectedNode = null;
 let initialDragPosition = { x: 0, y: 0 };
 let rootNode = null;
 const defaultColor = "rgb(141, 141, 141)";
-let potentialParent = null; // used for changing parents with drag and drop
 
 function createNode(nodeConfig) {
 
@@ -185,7 +184,6 @@ function updateConnector(parent, child, connector) {
   connector.setAttribute("stroke", childColor);
 }
 
-
 function dragStart(e) {
   e.stopPropagation();
 
@@ -194,7 +192,7 @@ function dragStart(e) {
     return;
   }
 
-  draggedNode = e.currentTarget; 
+  draggedNode = e.target;
   const rect = draggedNode.getBoundingClientRect();
   offsetX = e.clientX - rect.left;
   offsetY = e.clientY - rect.top;
@@ -204,31 +202,6 @@ function dragStart(e) {
   document.addEventListener("mouseup", dragEnd);
 }
 
-function findNodeUnderCursor(x, y) {
-  const elements = document.elementsFromPoint(x, y);
-  return elements.find(el => el.classList.contains('node') && el !== draggedNode);
-}
-
-function changeParent(childNode, newParentNode) {
-  // Remove old connector
-  const oldConnector = svgContainer.querySelector(`[data-child="${childNode.id}"]`);
-  if (oldConnector) {
-    oldConnector.remove();
-  }
-
-  // Create new connector
-  drawConnector(newParentNode, childNode);
-
-  // Update the position of the child node relative to the new parent
-  const parentRect = newParentNode.getBoundingClientRect();
-  const childRect = childNode.getBoundingClientRect();
-  
-  childNode.style.left = `${childRect.left - parentRect.left + parentRect.width + 20}px`;
-  childNode.style.top = `${childRect.top - parentRect.top}px`;
-
-  updateConnectors();
-}
-
 function drag(e) {
   if (draggedNode) {
     const dx = e.clientX - initialDragPosition.x;
@@ -236,17 +209,6 @@ function drag(e) {
     moveNodeAndDescendants(draggedNode, dx, dy);
     initialDragPosition = { x: e.clientX, y: e.clientY };
     updateConnectors();
-
-    // Check for potential new parent node under cursor to reparent node
-    // the class helps us to visually see where the node will be moved to
-    potentialParent = findNodeUnderCursor(e.clientX, e.clientY);
-    if (potentialParent && potentialParent !== draggedNode) {
-      potentialParent.classList.add('potential-parent');
-    } else if (potentialParent) {
-      potentialParent.classList.remove('potential-parent');
-      potentialParent = null;
-    }
-
   }
 }
 
@@ -261,16 +223,7 @@ function moveNodeAndDescendants(node, dx, dy) {
 }
 
 function dragEnd() {
-  if (draggedNode && potentialParent && potentialParent !== draggedNode) {
-    changeParent(draggedNode, potentialParent);
-  }
-
-  if (potentialParent) {
-    potentialParent.classList.remove('potential-parent');
-  }
-
   draggedNode = null;
-  potentialParent = null;
   document.removeEventListener("mousemove", drag);
   document.removeEventListener("mouseup", dragEnd);
 }
