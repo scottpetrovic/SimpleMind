@@ -419,7 +419,11 @@ function importMindmap(jsonData) {
     rootNode = document.getElementById(mindmapData.nodes[0].id);
     // add root-node class to root node
     rootNode.classList.add("root-node");
-  
+
+    // new nodes after import need to increment their ID from the last node we added
+    nodeId = mindmapData.nodes.length;
+    
+
     selectNode({ target: rootNode });
   
     updateConnectors();
@@ -432,10 +436,11 @@ function importMindmap(jsonData) {
 }
 
 function addNode(baseNode) {
+
+  const children = getChildren(baseNode); // Assuming children have a class 'node'
   const offset = 40; // Offset both below and to the right
 
   let referenceNode = baseNode;
-  const children = getChildren(baseNode); // Assuming children have a class 'node'
   if (children.length > 0) {
     referenceNode = children[children.length - 1]; // Use the last child as reference
   }
@@ -450,6 +455,7 @@ function addNode(baseNode) {
   }
 
   let newY = referenceRect.bottom + offset;
+
 
   const nodeConfig = {
     x_position: newX,
