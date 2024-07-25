@@ -10,11 +10,6 @@ Build a mind map to help organize your ideas or todo items. This was built as an
 - Export and Import mind map to JSON format.
 - Color labeling
 
-
-## TODO
-- How to build binaries for Windows and Linux
-- How to publish binaries out to github
-
 ## Building
 You need node.js for this. I am on version 18
 
