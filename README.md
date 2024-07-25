@@ -23,7 +23,7 @@ package is used. All the NPM dependencies that contain "forge" in them are for t
 
 This packaging is configured through forge.config.js
 
-   npm run make
+    npm run make
 
 There will be an "out" folder created which contains the portable executable
 
