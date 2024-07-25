@@ -384,43 +384,51 @@ function exportMindmap() {
 }
 
 function importMindmap(jsonData) {
-  const mindmapData = JSON.parse(jsonData);
 
-  // Clear existing mindmap
-  mindmap.innerHTML = "";
-  svgContainer.innerHTML = "";
+  try {
+    const mindmapData = JSON.parse(jsonData);
 
-  // Create nodes
-  mindmapData.nodes.forEach((nodeData) => {
-    const nodeConfig = {
-      x_position: nodeData.x,
-      y_position: nodeData.y,
-      parent: null,
-      node_id: nodeData.id,
-      node_content: nodeData.content,
-      color: nodeData.color,
-    };
+    // Clear existing mindmap
+    mindmap.innerHTML = "";
+    svgContainer.innerHTML = "";
+  
+    // Create nodes
+    mindmapData.nodes.forEach((nodeData) => {
+      const nodeConfig = {
+        x_position: nodeData.x,
+        y_position: nodeData.y,
+        parent: null,
+        node_id: nodeData.id,
+        node_content: nodeData.content,
+        color: nodeData.color,
+      };
+  
+      createNode(nodeConfig);
+    });
+  
+    // Create connectors
+    mindmapData.connectors.forEach((connectorData) => {
+      const parent = document.getElementById(connectorData.parent);
+      const child = document.getElementById(connectorData.child);
+      if (parent && child) {
+        drawConnector(parent, child);
+      }
+    });
+  
+    // Set root node
+    rootNode = document.getElementById(mindmapData.nodes[0].id);
+    // add root-node class to root node
+    rootNode.classList.add("root-node");
+  
+    selectNode({ target: rootNode });
+  
+    updateConnectors();
 
-    createNode(nodeConfig);
-  });
-
-  // Create connectors
-  mindmapData.connectors.forEach((connectorData) => {
-    const parent = document.getElementById(connectorData.parent);
-    const child = document.getElementById(connectorData.child);
-    if (parent && child) {
-      drawConnector(parent, child);
-    }
-  });
-
-  // Set root node
-  rootNode = document.getElementById(mindmapData.nodes[0].id);
-  // add root-node class to root node
-  rootNode.classList.add("root-node");
-
-  selectNode({ target: rootNode });
-
-  updateConnectors();
+    return true;
+  } catch (error) {
+    console.error("Error while importing mind map file: ", error);
+    return false;  
+  }
 }
 
 function addNode(baseNode) {
@@ -482,6 +490,7 @@ newBtn.addEventListener("click", (e) => {
 })
 
 importBtn.addEventListener("click", () => {
+  importInput.value = ''; // Clear any previously selected file
   importInput.click();
 });
 
@@ -490,8 +499,16 @@ importInput.addEventListener("change", (e) => {
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      importMindmap(e.target.result);
+      const successfully_imported = importMindmap(e.target.result);
+      
+      if (successfully_imported) {        
+        importInput.value = ''; // Clear the file input
+      } else {
+        console.error("Failed to import mind map file. Please check the file and try again")
+      }
+
     };
+
     reader.readAsText(file);
   }
 });
