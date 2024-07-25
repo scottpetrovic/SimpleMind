@@ -125,7 +125,13 @@ function showDialog(node) {
     node.getElementsByClassName("color-chip")[0].style.backgroundColor;
   const colorRadio = document.querySelector(`input[value="${color}"]`);
 
-  colorRadio.checked = true;
+  if(colorRadio) {
+    colorRadio.checked = true;    
+  }
+  else {
+    console.log('color not found. trying to get color: ', color)
+  }
+
 
   document.getElementById("textInput").focus();
   document.getElementById("textInput").select();
